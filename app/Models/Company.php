@@ -15,6 +15,7 @@ class Company extends Model
         'name',
         'website',
         'address',
+         'logo',
     ];
 
     // Relationship: Company belongs to a recruiter (User)
