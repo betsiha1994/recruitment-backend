@@ -30,8 +30,13 @@ class JobService
      */
     public function createJob(array $data)
     {
-        // Attach company automatically (logged-in recruiter)
-        $data['company_id'] = Auth::user()->company->id;
+        $user = auth('api')->user();
+
+        if (!$user) {
+            abort(401, 'Unauthenticated');
+        }
+
+        $data['company_id'] = $user->company->id;
 
         return Job::create($data);
     }

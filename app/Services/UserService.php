@@ -33,21 +33,24 @@ class UserService
     /**
      * Login a user
      */
+
     public function login(array $credentials)
     {
-        // Attempt to login and create a token
+        // Attempt to create a token
         if (!$token = JWTAuth::attempt($credentials)) {
             return null; // login failed
         }
 
-        // Get authenticated user from token
-        $user = JWTAuth::parseToken()->authenticate();
+        // Get the user based on email
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
 
         return [
             'user' => $user,
             'token' => $token,
         ];
     }
+
+
 
     /**
      * Get authenticated user
@@ -66,4 +69,3 @@ class UserService
         return true;
     }
 }
- 
