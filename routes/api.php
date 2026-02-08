@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\CandidateController;
+
 
 
 
@@ -37,6 +39,23 @@ Route::middleware('auth:api')->group(function () {
     Route::get('companies', [CompanyController::class, 'show']);    // get logged-in recruiter company
     Route::put('companies', [CompanyController::class, 'update']);  // update company
 });
+
+Route::middleware('auth:api')->group(function () {
+
+    // Get current user's candidate profile
+    Route::get('/candidate', [CandidateController::class, 'show']);
+
+    // Create candidate profile
+    Route::post('/candidate', [CandidateController::class, 'store']);
+
+    // Update candidate profile
+    Route::put('/candidate/{id}', [CandidateController::class, 'update']);
+
+    // Delete candidate profile
+    Route::delete('/candidate/{id}', [CandidateController::class, 'destroy']);
+
+});
+
 
 Route::get('/', function () {
     return response()->json(['message' => 'API is working']);
