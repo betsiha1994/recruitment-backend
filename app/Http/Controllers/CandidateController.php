@@ -15,11 +15,9 @@ class CandidateController extends Controller
     {
         $this->candidateService = $candidateService;
 
-        // Require authentication for all methods
         $this->middleware('auth');
     }
 
-    // Show current user's candidate profile
     public function show()
     {
         $userId = Auth::id();
@@ -32,7 +30,6 @@ class CandidateController extends Controller
         return response()->json($candidate);
     }
 
-    // Create candidate profile
     public function store(Request $request)
     {
         $request->validate([
@@ -48,7 +45,6 @@ class CandidateController extends Controller
         return response()->json($candidate, 201);
     }
 
-    // Update candidate profile
     public function update(Request $request, $id)
     {
         $candidate = Candidate::find($id);
@@ -70,7 +66,6 @@ class CandidateController extends Controller
         return response()->json($candidate);
     }
 
-    // Delete candidate profile
     public function destroy($id)
     {
         $candidate = Candidate::find($id);
