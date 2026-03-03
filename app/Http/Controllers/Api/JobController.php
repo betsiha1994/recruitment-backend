@@ -1,6 +1,7 @@
 <?php
- 
-namespace App\Http\Controllers\Api;  
+
+namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Controller;
 use App\Services\JobService;
 use App\Models\Job;
@@ -15,11 +16,25 @@ class JobController extends Controller
         $this->jobService = $jobService;
     }
 
+    /**
+     * Public job listing
+     */
     public function index()
     {
         return $this->jobService->getAllJobs();
     }
 
+    /**
+     * Recruiter dashboard jobs
+     */
+    public function recruiterJobs()
+    {
+        return $this->jobService->getRecruiterJobs();
+    }
+
+    /**
+     * Create job (Recruiter only)
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -28,16 +43,26 @@ class JobController extends Controller
             'location' => 'required|string',
             'type' => 'required|string',
             'salary' => 'nullable|string',
+            'category' => 'required|string',
         ]);
 
-        return $this->jobService->createJob($data);
+        return response()->json(
+            $this->jobService->createJob($data),
+            201
+        );
     }
 
+    /**
+     * Show single job
+     */
     public function show(Job $job)
     {
         return $this->jobService->getJobById($job);
     }
 
+    /**
+     * Update job (Ownership protected)
+     */
     public function update(Request $request, Job $job)
     {
         $data = $request->validate([
@@ -46,14 +71,27 @@ class JobController extends Controller
             'location' => 'string',
             'type' => 'string',
             'salary' => 'nullable|string',
+            'category' => 'string',
         ]);
 
-        return $this->jobService->updateJob($job, $data);
+        return response()->json(
+            $this->jobService->updateJob($job, $data)
+        );
     }
 
+    /**
+     * Delete job (Ownership protected)
+     */
     public function destroy(Job $job)
     {
         $this->jobService->deleteJob($job);
-        return response()->json(['message' => 'Job deleted']);
+
+        return response()->json([
+            'message' => 'Job deleted successfully'
+        ]);
+    }
+    public function jobsByCategory($category)
+    {
+        return $this->jobService->getJobsByCategory($category);
     }
 }

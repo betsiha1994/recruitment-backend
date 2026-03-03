@@ -3,16 +3,32 @@
 namespace App\Services;
 
 use App\Models\Job;
-use Illuminate\Support\Facades\Auth;
 
 class JobService
 {
     /**
-     * Get all jobs with company data
+     * Get all jobs with company data (Public listing)
      */
     public function getAllJobs()
     {
         return Job::with('company')
+            ->latest()
+            ->get();
+    }
+
+    /**
+     * Get recruiter jobs (Dashboard - only own company jobs)
+     */
+    public function getRecruiterJobs()
+    {
+        $user = auth('api')->user();
+
+        if (!$user || !$user->company) {
+            abort(403, 'Unauthorized');
+        }
+
+        return Job::with('company')
+            ->where('company_id', $user->company->id)
             ->latest()
             ->get();
     }
@@ -32,7 +48,7 @@ class JobService
     {
         $user = auth('api')->user();
 
-        if (!$user) {
+        if (!$user || !$user->company) {
             abort(401, 'Unauthenticated');
         }
 
@@ -46,7 +62,14 @@ class JobService
      */
     public function updateJob(Job $job, array $data)
     {
+        $user = auth('api')->user();
+
+        if (!$user || $job->company_id !== $user->company->id) {
+            abort(403, 'Unauthorized');
+        }
+
         $job->update($data);
+
         return $job;
     }
 
@@ -55,6 +78,19 @@ class JobService
      */
     public function deleteJob(Job $job)
     {
+        $user = auth('api')->user();
+
+        if (!$user || $job->company_id !== $user->company->id) {
+            abort(403, 'Unauthorized');
+        }
+
         return $job->delete();
+    }
+    public function getJobsByCategory($category)
+    {
+        return Job::with('company')
+            ->where('category', $category)
+            ->latest()
+            ->get();
     }
 }

@@ -32,6 +32,8 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{job}', [JobController::class, 'update']);
     Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
+    Route::get('/recruiter/jobs', [JobController::class, 'recruiterJobs']);
+    Route::get('/jobs/category/{category}', [JobController::class, 'jobsByCategory']);
 
     // Company
     Route::post('companies', [CompanyController::class, 'store']);

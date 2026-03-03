@@ -30,17 +30,22 @@ class UserService
         ];
     }
 
-   
+
 
     public function login(array $credentials)
     {
         // Attempt to create a token
         if (!$token = JWTAuth::attempt($credentials)) {
             return null; // login failed
-        } 
+        }
 
         // Get the user based on email
         $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+        $user = JWTAuth::user()->load('company');
+        if ($user) {
+            $user->load('company');
+        }
 
         return [
             'user' => $user,
