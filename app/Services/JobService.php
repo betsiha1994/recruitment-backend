@@ -16,9 +16,7 @@ class JobService
             ->get();
     }
 
-    /**
-     * Get recruiter jobs (Dashboard - only own company jobs)
-     */
+   
     public function getRecruiterJobs()
     {
         $user = auth('api')->user();
@@ -33,9 +31,7 @@ class JobService
             ->get();
     }
 
-    /**
-     * Get single job with relations
-     */
+   
     public function getJobById(Job $job)
     {
         return $job->load('company', 'applications');
