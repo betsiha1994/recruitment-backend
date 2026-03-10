@@ -8,21 +8,13 @@ use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CategoryController;
 
 
-/*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
+
 
 // Register + Login
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
-/*
-|--------------------------------------------------------------------------
-| Protected Routes (JWT Auth)
-|--------------------------------------------------------------------------
-*/
+
 
 Route::get('/categories', [CategoryController::class, 'index']);
 
