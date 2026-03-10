@@ -10,7 +10,6 @@ use App\Http\Controllers\CategoryController;
 
 
 
-// Register + Login
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
@@ -26,14 +25,12 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::get('me', [UserController::class, 'me']);
     Route::post('logout', [UserController::class, 'logout']);
 
-    // Jobs
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{job}', [JobController::class, 'update']);
     Route::delete('/jobs/{job}', [JobController::class, 'destroy']);
     Route::get('/recruiter/jobs', [JobController::class, 'recruiterJobs']);
     Route::get('/jobs/category/{category}', [JobController::class, 'jobsByCategory']);
 
-    // Company
     Route::post('companies', [CompanyController::class, 'store']);
     Route::get('companies', [CompanyController::class, 'show']);
     Route::put('companies', [CompanyController::class, 'update']);
