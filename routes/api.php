@@ -43,11 +43,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::delete('/candidate/{id}', [CandidateController::class, 'destroy']);
 });
 
-/*
-|--------------------------------------------------------------------------
-| Health Check
-|--------------------------------------------------------------------------
-*/
+
 
 Route::get('/', function () {
     return response()->json(['message' => 'API is working']);
