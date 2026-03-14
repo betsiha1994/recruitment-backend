@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Services\ApplicationService;
+use App\Models\Application;
+use App\Models\Job;
+use Illuminate\Http\Request;
+
+class ApplicationController extends Controller
+{
+    protected ApplicationService $applicationService;
+
+    public function __construct(ApplicationService $applicationService)
+    {
+        $this->applicationService = $applicationService;
+    }
+
+    /**
+     * Submit a new application (User)
+     */
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'job_id' => 'required|exists:jobs,id',
+            'cover_letter' => 'nullable|string',
+            'resume_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        // Send file as a special key
+        if ($request->hasFile('resume_file')) {
+            $data['resume_file'] = $request->file('resume_file');
+        }
+
+        $application = $this->applicationService->createApplication($data);
+
+        return response()->json([
+            'message' => 'Application submitted successfully',
+            'application' => $application
+        ]);
+    }
+
+    /**
+     * Get all applications for a specific job (Recruiter only)
+     */
+    public function applicationsByJob(Job $job)
+    {
+        $applications = $this->applicationService->getApplicationsByJob($job);
+
+        return response()->json($applications);
+    }
+
+    /**
+     * Update application status (Recruiter only)
+     */
+    public function updateStatus(Application $application, Request $request)
+    {
+        $data = $request->validate([
+            'status' => 'required|string|in:pending,accepted,rejected'
+        ]);
+
+        $updated = $this->applicationService->updateApplicationStatus($application, $data['status']);
+
+        return response()->json([
+            'message' => 'Application status updated',
+            'application' => $updated
+        ]);
+    }
+
+    /**
+     * Get all applications submitted by the current user
+     */
+    public function myApplications()
+    {
+        $applications = $this->applicationService->getUserApplications();
+
+        return response()->json($applications);
+    }
+}

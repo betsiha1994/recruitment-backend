@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Api\ApplicationController;
 
 
 
@@ -18,6 +19,9 @@ Route::post('login', [UserController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::get('/categories/{id}/jobs', [CategoryController::class, 'jobs']);
+Route::get('/jobs/{job}', [JobController::class, 'show']);
+
+
 
 Route::middleware(['jwt.auth'])->group(function () {
 
@@ -31,6 +35,8 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::get('/recruiter/jobs', [JobController::class, 'recruiterJobs']);
     Route::get('/jobs/category/{category}', [JobController::class, 'jobsByCategory']);
 
+
+
     Route::post('companies', [CompanyController::class, 'store']);
     Route::get('companies', [CompanyController::class, 'show']);
     Route::put('companies', [CompanyController::class, 'update']);
@@ -40,6 +46,11 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::post('/candidate', [CandidateController::class, 'store']);
     Route::put('/candidate/{id}', [CandidateController::class, 'update']);
     Route::delete('/candidate/{id}', [CandidateController::class, 'destroy']);
+
+    Route::post('/applications', [ApplicationController::class, 'store']);
+    Route::get('/jobs/{job}/applications', [ApplicationController::class, 'applicationsByJob']);
+    Route::put('/applications/{application}/status', [ApplicationController::class, 'updateStatus']);
+    Route::get('/my/applications', [ApplicationController::class, 'myApplications']);
 });
 
 

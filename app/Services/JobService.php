@@ -30,11 +30,16 @@ class JobService
     }
 
 
-    public function getJobById(Job $job)
+    public function getJobById(Job $job, $forRecruiter = false)
     {
-        return $job->load('company', 'applications');
-    }
+        if ($forRecruiter) {
+            // Only load applications for recruiters
+            return $job->load('company', 'applications');
+        }
 
+        // For job seekers: only company info, no applications
+        return $job->load('company');
+    }
     /**
      * Create a new job (Recruiter only)
      */
