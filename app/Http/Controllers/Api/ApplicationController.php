@@ -25,12 +25,22 @@ class ApplicationController extends Controller
         $data = $request->validate([
             'job_id' => 'required|exists:jobs,id',
             'cover_letter' => 'nullable|string',
-            'resume_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'resume_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
-        // Send file as a special key
-        if ($request->hasFile('resume_file')) {
+        if ($request->hasFile('resume_file') && $request->file('resume_file')->isValid()) {
             $data['resume_file'] = $request->file('resume_file');
+        }
+
+        // Prevent duplicate applications
+        $user = auth('api')->user();
+        $existing = Application::where('user_id', $user->id)
+            ->where('job_id', $data['job_id'])
+            ->first();
+        if ($existing) {
+            return response()->json([
+                'message' => 'You have already applied for this job'
+            ], 400);
         }
 
         $application = $this->applicationService->createApplication($data);

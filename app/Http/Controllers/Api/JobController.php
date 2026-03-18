@@ -52,10 +52,10 @@ class JobController extends Controller
         );
     }
 
-   
+
     public function show(Job $job)
     {
-        $user = auth('api')->user(); 
+        $user = auth('api')->user();
         $forRecruiter = $user && $user->role === 'recruiter';
 
         return response()->json($this->jobService->getJobById($job, $forRecruiter));

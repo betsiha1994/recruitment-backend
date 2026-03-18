@@ -13,20 +13,29 @@ class ApplicationService
      */
     public function createApplication(array $data)
     {
-        // Authenticated user must be the applicant
         $user = auth('api')->user();
         if (!$user) {
             abort(401, 'Unauthenticated');
         }
 
-        $data['user_id'] = $user->id;
+        // Prevent duplicate application
+        $existing = Application::where('user_id', $user->id)
+            ->where('job_id', $data['job_id'])
+            ->first();
 
-        // If resume uploaded, store it
-        if (isset($data['resume_file'])) {
-            $data['resume_path'] = $data['resume_file']->store('resumes', 'public');
-            unset($data['resume_file']); // remove file object from data
+        if ($existing) {
+            abort(400, 'You have already applied for this job');
         }
 
+        $data['user_id'] = $user->id;
+
+        // Handle resume file safely
+        if (isset($data['resume_file']) && $data['resume_file'] && $data['resume_file']->isValid()) {
+            $data['resume_path'] = $data['resume_file']->store('resumes', 'public');
+            unset($data['resume_file']);
+        }
+
+        // Create the application
         return Application::create($data);
     }
 
@@ -37,7 +46,6 @@ class ApplicationService
     {
         $user = auth('api')->user();
 
-        // Ensure recruiter owns this job
         if (!$user || $job->company_id !== $user->company_id) {
             abort(403, 'Unauthorized');
         }
@@ -52,7 +60,6 @@ class ApplicationService
     {
         $user = auth('api')->user();
 
-        // Ensure recruiter owns the job linked to this application
         if (!$user || $application->job->company_id !== $user->company_id) {
             abort(403, 'Unauthorized');
         }
@@ -63,7 +70,7 @@ class ApplicationService
     }
 
     /**
-     * Optional: Get applications submitted by the current user
+     * Get applications submitted by the current user
      */
     public function getUserApplications()
     {
