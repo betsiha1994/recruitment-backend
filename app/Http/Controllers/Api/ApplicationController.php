@@ -32,7 +32,6 @@ class ApplicationController extends Controller
             $data['resume_file'] = $request->file('resume_file');
         }
 
-        // Prevent duplicate applications
         $user = auth('api')->user();
         $existing = Application::where('user_id', $user->id)
             ->where('job_id', $data['job_id'])
