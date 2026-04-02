@@ -20,7 +20,6 @@ class Job extends Model
         'category',
     ];
 
-    // Job belongs to a company
     public function company()
     {
         return $this->belongsTo(Company::class);
