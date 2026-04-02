@@ -49,17 +49,12 @@ class UserService
 
 
 
-    /**
-     * Get authenticated user
-     */
     public function me()
     {
         return JWTAuth::parseToken()->authenticate();
     }
 
-    /**
-     * Logout user
-     */
+    
     public function logout()
     {
         JWTAuth::parseToken()->invalidate();

@@ -13,10 +13,10 @@ return new class extends Migration
 
             $table->foreignId('user_id')
                 ->constrained()
-                ->onDelete('cascade'); 
+                ->onDelete('cascade');
 
             $table->foreignId('job_id')
-                ->constrained()
+                ->constrained('jobs')  // <-- explicit reference
                 ->onDelete('cascade');
 
             $table->string('status')->default('pending');
