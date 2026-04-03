@@ -85,11 +85,10 @@ class JobService
 
         return $job->delete();
     }
-    public function getJobsByCategory($category)
-    {
-        return Job::with('company')
-            ->where('category', $category)
-            ->latest()
-            ->get();
-    }
+   public function getJobsByCategory($categoryId)
+{
+    return Job::where('category', $categoryId)  // use 'category' not 'category_id'
+              ->orderBy('created_at', 'desc')
+              ->get();
+}
 }

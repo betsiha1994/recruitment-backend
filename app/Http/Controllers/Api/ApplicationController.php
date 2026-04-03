@@ -80,10 +80,16 @@ class ApplicationController extends Controller
     /**
      * Get all applications submitted by the current user
      */
-    public function myApplications()
-    {
-        $applications = $this->applicationService->getUserApplications();
+   public function myApplications()
+{
+    $applications = $this->applicationService->getUserApplications();
 
-        return response()->json($applications);
-    }
+    // Map each application to include a public URL
+    $applications = $applications->map(function($app) {
+        $app->resume_url = $app->resume_path ? asset('storage/' . $app->resume_path) : null;
+        return $app;
+    });
+
+    return response()->json($applications);
+}
 }

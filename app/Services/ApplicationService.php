@@ -73,12 +73,23 @@ class ApplicationService
      * Get applications submitted by the current user
      */
     public function getUserApplications()
-    {
-        $user = auth('api')->user();
-        if (!$user) {
-            abort(401, 'Unauthenticated');
-        }
-
-        return Application::where('user_id', $user->id)->with('job')->latest()->get();
+{
+    $user = auth('api')->user();
+    if (!$user) {
+        abort(401, 'Unauthenticated');
     }
+
+    return Application::where('user_id', $user->id)
+        ->with('job')
+        ->latest()
+        ->get()
+        ->map(function($app) {
+            return [
+                'id' => $app->id,
+                'job' => $app->job,
+                'status' => $app->status,
+                'resume_url' => $app->resume_path ? asset('storage/' . $app->resume_path) : null,
+            ];
+        });
+}
 }

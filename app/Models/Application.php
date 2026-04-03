@@ -26,6 +26,12 @@ class Application extends Model
     // Link to the user / candidate
     public function user()
     {
-        return $this->belongsTo(User::class); // or Candidate if you have a Candidate model
+        return $this->belongsTo(User::class); 
+        // or Candidate if you have a Candidate model
     }
+    // App/Models/Application.php
+public function getResumeUrlAttribute()
+{
+    return $this->resume_path ? asset('storage/' . $this->resume_path) : null;
+}
 }

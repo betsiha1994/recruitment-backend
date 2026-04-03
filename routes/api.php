@@ -21,6 +21,10 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}/jobs', [CategoryController::class, 'jobs']);
 Route::get('/jobs/{job}', [JobController::class, 'show']);
 
+Route::post('/categories', [CategoryController::class, 'store']);          // Create new category
+Route::put('/categories/{id}', [CategoryController::class, 'update']);     // Update category
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); // Delete category
+
 
 
 Route::middleware(['jwt.auth'])->group(function () {
