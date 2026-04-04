@@ -77,9 +77,6 @@ class ApplicationController extends Controller
         ]);
     }
 
-    /**
-     * Get all applications submitted by the current user
-     */
    public function myApplications()
 {
     $applications = $this->applicationService->getUserApplications();
